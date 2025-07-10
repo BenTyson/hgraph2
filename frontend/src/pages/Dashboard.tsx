@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { StatCard } from '../components/StatCard'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Badge } from '../components/Badge'
+import { BETTrendChart } from '../components/charts/BETTrendChart'
+import { ProcessCorrelationChart } from '../components/charts/ProcessCorrelationChart'
 import { dashboardApi } from '../services/api'
 import { FireIcon, TruckIcon, ChartBarIcon } from '@heroicons/react/24/outline'
 
@@ -9,6 +11,11 @@ export function Dashboard() {
   const { data: summary, isLoading, error } = useQuery({
     queryKey: ['dashboard-summary'],
     queryFn: () => dashboardApi.getSummary().then(res => res.data),
+  })
+
+  const { data: batchPerformance } = useQuery({
+    queryKey: ['batch-performance'],
+    queryFn: () => dashboardApi.getBatchPerformance().then(res => res.data),
   })
 
   if (isLoading) {
@@ -35,6 +42,22 @@ export function Dashboard() {
     )
   }
 
+  // Transform batch performance data for charts
+  const trendData = batchPerformance?.map(batch => ({
+    date: batch.date,
+    batch: batch.name,
+    bet: batch.bet || 0,
+    isOvenC: batch.is_oven_c_era,
+  })).filter(d => d.bet > 0) || []
+
+  const correlationData = batchPerformance?.map(batch => ({
+    batch: batch.name,
+    temperature: batch.temperature || 0,
+    bet: batch.bet || 0,
+    kohRatio: batch.koh_ratio || 0,
+    isOvenC: batch.is_oven_c_era,
+  })).filter(d => d.bet > 0 && d.temperature > 0) || []
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -54,7 +77,6 @@ export function Dashboard() {
             value: '+15% vs pre-Oven C'
           }}
           icon={<FireIcon className="h-5 w-5 text-orange-600" />}
-          className="lg:col-span-1"
         />
 
         <StatCard
@@ -66,7 +88,6 @@ export function Dashboard() {
             value: 'Consistent improvement'
           }}
           icon={<ChartBarIcon className="h-5 w-5 text-blue-600" />}
-          className="lg:col-span-1"
         />
 
         <StatCard
@@ -74,8 +95,48 @@ export function Dashboard() {
           value={`${summary?.oven_c_performance.total_batches || 0}`}
           subtitle="Total Oven C batches"
           icon={<TruckIcon className="h-5 w-5 text-green-600" />}
-          className="lg:col-span-1"
         />
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* BET Trend Chart */}
+        <div className="card">
+          <div className="card-header">
+            <h3 className="text-lg font-medium text-gray-900">BET Surface Area Trends</h3>
+            <p className="text-sm text-gray-500">Performance evolution over time</p>
+          </div>
+          <div className="card-body">
+            {trendData.length > 0 ? (
+              <BETTrendChart data={trendData} />
+            ) : (
+              <div className="h-80 flex items-center justify-center">
+                <p className="text-gray-500">No trend data available</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Process Correlation Chart */}
+        <div className="card">
+          <div className="card-header">
+            <h3 className="text-lg font-medium text-gray-900">Temperature vs BET Correlation</h3>
+            <p className="text-sm text-gray-500">Process parameter optimization</p>
+          </div>
+          <div className="card-body">
+            {correlationData.length > 0 ? (
+              <ProcessCorrelationChart 
+                data={correlationData} 
+                xAxis="temperature"
+                title="Temperature vs BET"
+              />
+            ) : (
+              <div className="h-80 flex items-center justify-center">
+                <p className="text-gray-500">No correlation data available</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Detailed Analytics */}
@@ -116,25 +177,55 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Key Insights */}
+        {/* KOH Ratio Correlation */}
         <div className="card">
           <div className="card-header">
-            <h3 className="text-lg font-medium text-gray-900">Key Insights</h3>
-            <p className="text-sm text-gray-500">Process optimization observations</p>
+            <h3 className="text-lg font-medium text-gray-900">KOH Ratio vs BET Correlation</h3>
+            <p className="text-sm text-gray-500">Chemical process optimization</p>
           </div>
           <div className="card-body">
-            <div className="space-y-3">
-              {(summary?.insights || [
-                'Oven C era shows significant improvement',
-                'Species 1 consistently outperforming Species 2',
-                'KOH ratio 1.3-1.5 showing optimal results',
-                '800°C temperature range most effective'
-              ]).map((insight, i) => (
-                <div key={i} className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 w-1.5 h-1.5 bg-blue-600 rounded-full mt-2"></div>
-                  <p className="text-sm text-gray-700">{insight}</p>
-                </div>
-              ))}
+            {correlationData.length > 0 ? (
+              <ProcessCorrelationChart 
+                data={correlationData} 
+                xAxis="kohRatio"
+                title="KOH Ratio vs BET"
+              />
+            ) : (
+              <div className="h-80 flex items-center justify-center">
+                <p className="text-gray-500">No correlation data available</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Process Performance Summary */}
+      <div className="card">
+        <div className="card-header">
+          <h3 className="text-lg font-medium text-gray-900">Process Performance Summary</h3>
+          <p className="text-sm text-gray-500">Key metrics and optimization insights</p>
+        </div>
+        <div className="card-body">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-2xl font-bold text-gray-900">1,839</p>
+              <p className="text-sm text-gray-600">Peak BET (m²/g)</p>
+              <p className="text-xs text-gray-500">TB1175B</p>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-2xl font-bold text-gray-900">800°C</p>
+              <p className="text-sm text-gray-600">Optimal Temperature</p>
+              <p className="text-xs text-gray-500">Most batches</p>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-2xl font-bold text-gray-900">1.5</p>
+              <p className="text-sm text-gray-600">KOH Ratio</p>
+              <p className="text-xs text-gray-500">Best results</p>
+            </div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <p className="text-2xl font-bold text-gray-900">739g</p>
+              <p className="text-sm text-gray-600">Largest Batch</p>
+              <p className="text-xs text-gray-500">Shipped to Albany</p>
             </div>
           </div>
         </div>
