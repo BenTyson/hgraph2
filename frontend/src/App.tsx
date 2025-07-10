@@ -1,3 +1,4 @@
+// frontend/src/App.tsx - Updated with new routes
 import { Routes, Route } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar'
 import { Dashboard } from './pages/Dashboard'
@@ -8,6 +9,9 @@ import { QualityControl } from './pages/QualityControl'
 import { Reports } from './pages/Reports'
 import { DataImport } from './pages/DataImport'
 import { UserManagement } from './pages/UserManagement'
+// NEW IMPORTS
+import { BETAnalysis } from './pages/BETAnalysis'
+import { SupercapacitorApplication } from './pages/SupercapacitorApplication'
 
 function App() {
   return (
@@ -23,6 +27,9 @@ function App() {
           <Route path="/import" element={<DataImport />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/users" element={<UserManagement />} />
+          {/* NEW ROUTES */}
+          <Route path="/bet-analysis" element={<BETAnalysis />} />
+          <Route path="/supercapacitor" element={<SupercapacitorApplication />} />
         </Routes>
       </main>
     </div>
