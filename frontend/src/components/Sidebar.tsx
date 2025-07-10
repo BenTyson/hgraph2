@@ -11,26 +11,37 @@ export function Sidebar() {
       position="fixed"
       left={0}
       top={0}
-      w="250px"
+      w="260px"
       h="100vh"
-      bg="gray.900"
+      bg="white"
       borderRight="1px solid"
-      borderColor="gray.700"
+      borderColor="gray.200"
       p={6}
     >
-      <Text fontSize="xl" fontWeight="bold" mb={8} color="gray.50">
-        HGraph2
-      </Text>
+      {/* Header */}
+      <Box mb={10}>
+        <Text fontSize="24px" fontWeight="700" color="gray.900" mb={1}>
+          HGraph2
+        </Text>
+        <Text fontSize="13px" color="gray.500" fontWeight="400">
+          Hemp Graphene Analytics
+        </Text>
+      </Box>
       
-      <VStack spacing={2} align="stretch">
+      {/* Navigation */}
+      <VStack spacing={1} align="stretch">
         <Button
           as={Link}
           to="/"
           variant={isActive('/') ? 'solid' : 'ghost'}
           justifyContent="flex-start"
-          size="sm"
+          size="md"
+          h="40px"
+          fontSize="14px"
+          fontWeight="500"
+          borderRadius="8px"
         >
-          📊 Dashboard
+          Dashboard
         </Button>
         
         <Button
@@ -38,18 +49,23 @@ export function Sidebar() {
           to="/batches"
           variant={isActive('/batches') ? 'solid' : 'ghost'}
           justifyContent="flex-start"
-          size="sm"
+          size="md"
+          h="40px"
+          fontSize="14px"
+          fontWeight="500"
+          borderRadius="8px"
         >
-          🧪 Batch Explorer
+          Batch Explorer
         </Button>
       </VStack>
       
+      {/* Footer */}
       <Box position="absolute" bottom={6} left={6} right={6}>
-        <Text fontSize="xs" color="gray.500">
-          Hemp-derived graphene analysis
+        <Text fontSize="11px" color="gray.400" textTransform="uppercase" letterSpacing="0.05em">
+          Production Analytics
         </Text>
-        <Text fontSize="xs" color="gray.600">
-          v1.0.0
+        <Text fontSize="11px" color="gray.400" mt={1}>
+          Version 1.0.0
         </Text>
       </Box>
     </Box>
