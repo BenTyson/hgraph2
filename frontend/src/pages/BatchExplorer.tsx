@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 import { SearchInput } from '../components/SearchInput'
 import { Table } from '../components/Table'
 import { Badge } from '../components/Badge'
@@ -7,6 +8,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { ExportControls } from '../components/ExportControls'
 import { batchApi, GrapheneBatch } from '../services/api'
 import { format } from 'date-fns'
+import { EyeIcon } from '@heroicons/react/24/outline'
 
 export function BatchExplorer() {
   const [filters, setFilters] = useState({
@@ -67,7 +69,12 @@ export function BatchExplorer() {
       title: 'Batch',
       render: (value: string, row: GrapheneBatch) => (
         <div className="flex flex-col">
-          <span className="font-medium text-gray-900">{value}</span>
+          <Link 
+            to={`/batch/${row.id}`}
+            className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            {value}
+          </Link>
           {row.is_oven_c_era && (
             <Badge variant="green" size="sm" className="mt-1 w-fit">
               Oven C Era
@@ -136,6 +143,19 @@ export function BatchExplorer() {
         )
       ),
     },
+    {
+      key: 'id' as keyof GrapheneBatch,
+      title: 'Actions',
+      render: (value: string) => (
+        <Link 
+          to={`/batch/${value}`}
+          className="inline-flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-sm"
+        >
+          <EyeIcon className="h-4 w-4" />
+          <span>View Details</span>
+        </Link>
+      ),
+    },
   ]
 
   if (isLoading) {
@@ -179,74 +199,74 @@ export function BatchExplorer() {
                 placeholder="Search batch name..."
                 value={filters.search}
                 onChange={(value) => setFilters({ ...filters, search: value })}
-                className="md:col-span-2"
-              />
+               className="md:col-span-2"
+             />
 
-              <select
-                value={filters.oven}
-                onChange={(e) => setFilters({ ...filters, oven: e.target.value })}
-                className="select"
-              >
-                <option value="">All Ovens</option>
-                <option value="C">Oven C</option>
-                <option value="AV1">AV1</option>
-                <option value="AV5">AV5</option>
-              </select>
+             <select
+               value={filters.oven}
+               onChange={(e) => setFilters({ ...filters, oven: e.target.value })}
+               className="select"
+             >
+               <option value="">All Ovens</option>
+               <option value="C">Oven C</option>
+               <option value="AV1">AV1</option>
+               <option value="AV5">AV5</option>
+             </select>
 
-              <select
-                value={filters.species}
-                onChange={(e) => setFilters({ ...filters, species: e.target.value })}
-                className="select"
-              >
-                <option value="">All Species</option>
-                <option value="1">Species 1</option>
-                <option value="2">Species 2</option>
-              </select>
-            </div>
+             <select
+               value={filters.species}
+               onChange={(e) => setFilters({ ...filters, species: e.target.value })}
+               className="select"
+             >
+               <option value="">All Species</option>
+               <option value="1">Species 1</option>
+               <option value="2">Species 2</option>
+             </select>
+           </div>
 
-            <div className="flex flex-wrap gap-4">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={filters.oven_c_era}
-                  onChange={(e) => setFilters({ ...filters, oven_c_era: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-700">Oven C Era Only</span>
-              </label>
+           <div className="flex flex-wrap gap-4">
+             <label className="flex items-center">
+               <input
+                 type="checkbox"
+                 checked={filters.oven_c_era}
+                 onChange={(e) => setFilters({ ...filters, oven_c_era: e.target.checked })}
+                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+               />
+               <span className="ml-2 text-sm text-gray-700">Oven C Era Only</span>
+             </label>
 
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={filters.shipped_only}
-                  onChange={(e) => setFilters({ ...filters, shipped_only: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm text-gray-700">Shipped Only</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
+             <label className="flex items-center">
+               <input
+                 type="checkbox"
+                 checked={filters.shipped_only}
+                 onChange={(e) => setFilters({ ...filters, shipped_only: e.target.checked })}
+                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+               />
+               <span className="ml-2 text-sm text-gray-700">Shipped Only</span>
+             </label>
+           </div>
+         </div>
+       </div>
+     </div>
 
-      {/* Results */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">
-            Found {filteredBatches.length} batches
-          </p>
-          <ExportControls 
-            data={exportData} 
-            filename="hgraph2_batches"
-            title="Export Batches"
-          />
-        </div>
+     {/* Results */}
+     <div className="space-y-4">
+       <div className="flex items-center justify-between">
+         <p className="text-sm text-gray-600">
+           Found {filteredBatches.length} batches
+         </p>
+         <ExportControls 
+           data={exportData} 
+           filename="hgraph2_batches"
+           title="Export Batches"
+         />
+       </div>
 
-        <Table
-          data={filteredBatches}
-          columns={columns}
-        />
-      </div>
-    </div>
-  )
+       <Table
+         data={filteredBatches}
+         columns={columns}
+       />
+     </div>
+   </div>
+ )
 }
