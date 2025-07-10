@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar'
 import { Dashboard } from './pages/Dashboard'
 import { BatchExplorer } from './pages/BatchExplorer'
+import { AnalysisResults } from './pages/AnalysisResults'
+import { Reports } from './pages/Reports'
 
 function App() {
   return (
@@ -11,6 +13,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/batches" element={<BatchExplorer />} />
+          <Route path="/analysis" element={<AnalysisResults />} />
+          <Route path="/reports" element={<Reports />} />
         </Routes>
       </main>
     </div>
