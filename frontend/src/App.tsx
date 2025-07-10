@@ -4,6 +4,7 @@ import { Dashboard } from './pages/Dashboard'
 import { BatchExplorer } from './pages/BatchExplorer'
 import { AnalysisResults } from './pages/AnalysisResults'
 import { Reports } from './pages/Reports'
+import { DataImport } from './pages/DataImport'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/batches" element={<BatchExplorer />} />
           <Route path="/analysis" element={<AnalysisResults />} />
+          <Route path="/import" element={<DataImport />} />
           <Route path="/reports" element={<Reports />} />
         </Routes>
       </main>

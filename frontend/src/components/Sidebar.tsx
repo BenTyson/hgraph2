@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import { HomeIcon, BeakerIcon, ChartBarIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
-import { HomeIcon as HomeSolid, BeakerIcon as BeakerSolid, ChartBarIcon as ChartBarSolid, DocumentTextIcon as DocumentTextSolid } from '@heroicons/react/24/solid'
+import { HomeIcon, BeakerIcon, ChartBarIcon, DocumentTextIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
+import { HomeIcon as HomeSolid, BeakerIcon as BeakerSolid, ChartBarIcon as ChartBarSolid, DocumentTextIcon as DocumentTextSolid, ArrowUpTrayIcon as ArrowUpTraySolid } from '@heroicons/react/24/solid'
 
 export function Sidebar() {
   return (
@@ -84,6 +84,28 @@ export function Sidebar() {
                 <ChartBarIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
               )}
               Analysis Results
+            </>
+          )}
+        </NavLink>
+
+        <NavLink
+          to="/import"
+          className={({ isActive }) =>
+            `group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              isActive
+                ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              {isActive ? (
+                <ArrowUpTraySolid className="mr-3 h-5 w-5 text-blue-600" />
+              ) : (
+                <ArrowUpTrayIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              )}
+              Data Import
             </>
           )}
         </NavLink>

@@ -4,6 +4,7 @@ import { SearchInput } from '../components/SearchInput'
 import { Table } from '../components/Table'
 import { Badge } from '../components/Badge'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { ExportControls } from '../components/ExportControls'
 import { batchApi, GrapheneBatch } from '../services/api'
 import { format } from 'date-fns'
 
@@ -38,6 +39,27 @@ export function BatchExplorer() {
     if (bet >= 1000) return { label: 'Acceptable', variant: 'yellow' as const }
     return { label: 'Poor', variant: 'red' as const }
   }
+
+  // Prepare export data
+  const exportData = filteredBatches.map(batch => ({
+    batch_name: batch.name,
+    date_created: batch.date_created,
+    oven: batch.oven || 'N/A',
+    species: batch.species || 'N/A',
+    temperature: batch.temperature || 'N/A',
+    koh_ratio: batch.koh_ratio || 'N/A',
+    time_hours: batch.time_hours || 'N/A',
+    grinding_method: batch.grinding_method || 'N/A',
+    gas_type: batch.gas_type || 'N/A',
+    best_bet_surface_area: batch.best_bet || 'N/A',
+    best_conductivity: batch.best_conductivity || 'N/A',
+    shipped_to: batch.shipped_to || 'Not Shipped',
+    shipped_date: batch.shipped_date || 'N/A',
+    shipped_weight: batch.shipped_weight || 'N/A',
+    is_oven_c_era: batch.is_oven_c_era ? 'Yes' : 'No',
+    appearance: batch.appearance || 'N/A',
+    quality_notes: batch.quality_notes || 'N/A'
+  }))
 
   const columns = [
     {
@@ -209,9 +231,16 @@ export function BatchExplorer() {
 
       {/* Results */}
       <div className="space-y-4">
-        <p className="text-sm text-gray-600">
-          Found {filteredBatches.length} batches
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-600">
+            Found {filteredBatches.length} batches
+          </p>
+          <ExportControls 
+            data={exportData} 
+            filename="hgraph2_batches"
+            title="Export Batches"
+          />
+        </div>
 
         <Table
           data={filteredBatches}
