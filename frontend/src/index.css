@@ -14,6 +14,10 @@
   body {
     @apply bg-gray-50 text-gray-900 font-sans;
   }
+  
+  .dark body {
+    @apply bg-gray-950 text-gray-100;
+  }
 }
 
 @layer components {
@@ -21,8 +25,16 @@
     @apply bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
   }
   
+  .dark .card {
+    @apply bg-gray-900 border-gray-700;
+  }
+  
   .card-header {
     @apply px-6 py-4 border-b border-gray-100;
+  }
+  
+  .dark .card-header {
+    @apply border-gray-700;
   }
   
   .card-body {
@@ -41,16 +53,32 @@
     @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
   }
   
+  .dark .btn-secondary {
+    @apply bg-gray-800 text-gray-100 hover:bg-gray-700;
+  }
+  
   .btn-ghost {
     @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-500;
+  }
+  
+  .dark .btn-ghost {
+    @apply text-gray-400 hover:text-gray-100 hover:bg-gray-800;
   }
   
   .input {
     @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
   }
   
+  .dark .input {
+    @apply border-gray-600 bg-gray-800 text-gray-100 placeholder-gray-500;
+  }
+  
   .select {
     @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
+  }
+  
+  .dark .select {
+    @apply border-gray-600 bg-gray-800 text-gray-100;
   }
   
   .badge {
@@ -61,31 +89,63 @@
     @apply bg-green-100 text-green-800;
   }
   
+  .dark .badge-green {
+    @apply bg-green-900/50 text-green-300;
+  }
+  
   .badge-blue {
     @apply bg-blue-100 text-blue-800;
+  }
+  
+  .dark .badge-blue {
+    @apply bg-blue-900/50 text-blue-300;
   }
   
   .badge-yellow {
     @apply bg-yellow-100 text-yellow-800;
   }
   
+  .dark .badge-yellow {
+    @apply bg-yellow-900/50 text-yellow-300;
+  }
+  
   .badge-red {
     @apply bg-red-100 text-red-800;
+  }
+  
+  .dark .badge-red {
+    @apply bg-red-900/50 text-red-300;
   }
   
   .badge-gray {
     @apply bg-gray-100 text-gray-800;
   }
   
+  .dark .badge-gray {
+    @apply bg-gray-800 text-gray-300;
+  }
+  
   .stat-label {
     @apply text-xs font-medium text-gray-500 uppercase tracking-wider;
+  }
+  
+  .dark .stat-label {
+    @apply text-gray-400;
   }
   
   .stat-value {
     @apply text-2xl font-semibold text-gray-900;
   }
   
+  .dark .stat-value {
+    @apply text-gray-100;
+  }
+  
   .stat-help {
     @apply text-sm text-gray-500;
+  }
+  
+  .dark .stat-help {
+    @apply text-gray-400;
   }
 }
