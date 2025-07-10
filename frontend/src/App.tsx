@@ -1,20 +1,19 @@
 import { Routes, Route } from 'react-router-dom'
-import { Box, Flex } from '@chakra-ui/react'
 import { Sidebar } from './components/Sidebar'
 import { Dashboard } from './pages/Dashboard'
 import { BatchExplorer } from './pages/BatchExplorer'
 
 function App() {
   return (
-    <Flex minH="100vh">
+    <div className="min-h-screen bg-gray-50">
       <Sidebar />
-      <Box flex="1" ml="250px" p={6}>
+      <main className="ml-64 p-8">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/batches" element={<BatchExplorer />} />
         </Routes>
-      </Box>
-    </Flex>
+      </main>
+    </div>
   )
 }
 

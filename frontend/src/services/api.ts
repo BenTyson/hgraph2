@@ -21,6 +21,12 @@ export interface GrapheneBatch {
   best_conductivity: number | null
   appearance: string | null
   quality_notes: string | null
+  koh_ratio: number | null
+  time_hours: number | null
+  grinding_method: string | null
+  gas_type: string | null
+  shipped_weight: number | null
+  shipment_notes: string | null
 }
 
 export interface DashboardSummary {
@@ -37,7 +43,7 @@ export interface DashboardSummary {
       batch: string
       customer: string
       weight: number
-      date: string
+      date: string | null
     }>
   }
   insights: string[]
@@ -57,6 +63,24 @@ export interface BatchPerformance {
   conductivity: number | null
 }
 
+export interface AnalysisResult {
+  id: string
+  graphene_batch_id: string
+  date_analyzed: string
+  bet_surface_area: number | null
+  bet_langmuir: number | null
+  conductivity: number | null
+  conductivity_unit: string
+  capacitance: number | null
+  pore_size: number | null
+  analysis_method: string | null
+  instrument: string | null
+  analyst: string | null
+  comments: string | null
+  created_at: string
+  energy_storage_grade: string | null
+}
+
 // API functions
 export const dashboardApi = {
   getSummary: () => api.get<DashboardSummary>('/dashboard/summary'),
@@ -72,4 +96,9 @@ export const batchApi = {
   }) => api.get<GrapheneBatch[]>('/batches/graphene', { params }),
   
   getGrapheneBatch: (id: string) => api.get<GrapheneBatch>(`/batches/graphene/${id}`),
+}
+
+export const analysisApi = {
+  getBatchAnalysis: (batchId: string) => api.get<AnalysisResult[]>(`/analysis/batch/${batchId}`),
+  createAnalysis: (data: Partial<AnalysisResult>) => api.post<AnalysisResult>('/analysis', data),
 }

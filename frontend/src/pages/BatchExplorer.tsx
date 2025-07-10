@@ -1,31 +1,10 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import {
-  Box,
-  VStack,
-  HStack,
-  Heading,
-  Input,
-  Select,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Badge,
-  Text,
-  Card,
-  CardBody,
-  Spinner,
-  Alert,
-  AlertIcon,
-  Checkbox,
-  InputGroup,
-  InputLeftElement,
-} from '@chakra-ui/react'
-import { SearchIcon } from '@chakra-ui/icons'
-import { batchApi } from '../services/api'
+import { SearchInput } from '../components/SearchInput'
+import { Table } from '../components/Table'
+import { Badge } from '../components/Badge'
+import { LoadingSpinner } from '../components/LoadingSpinner'
+import { batchApi, GrapheneBatch } from '../services/api'
 import { format } from 'date-fns'
 
 export function BatchExplorer() {
@@ -53,179 +32,192 @@ export function BatchExplorer() {
   ) || []
 
   const getBETGrade = (bet: number | null) => {
-    if (!bet) return { label: 'No Data', color: 'gray' }
-    if (bet >= 2000) return { label: 'Excellent', color: 'green' }
-    if (bet >= 1500) return { label: 'Good', color: 'blue' }
-    if (bet >= 1000) return { label: 'Acceptable', color: 'yellow' }
-    return { label: 'Poor', color: 'red' }
+    if (!bet) return { label: 'No Data', variant: 'gray' as const }
+    if (bet >= 2000) return { label: 'Excellent', variant: 'green' as const }
+    if (bet >= 1500) return { label: 'Good', variant: 'blue' as const }
+    if (bet >= 1000) return { label: 'Acceptable', variant: 'yellow' as const }
+    return { label: 'Poor', variant: 'red' as const }
   }
+
+  const columns = [
+    {
+      key: 'name' as keyof GrapheneBatch,
+      title: 'Batch',
+      render: (value: string, row: GrapheneBatch) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{value}</span>
+          {row.is_oven_c_era && (
+            <Badge variant="green" size="sm" className="mt-1 w-fit">
+              Oven C Era
+            </Badge>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: 'date_created' as keyof GrapheneBatch,
+      title: 'Date',
+      render: (value: string) => (
+        <span className="text-gray-700">
+          {format(new Date(value), 'MMM dd, yyyy')}
+        </span>
+      ),
+    },
+    {
+      key: 'oven' as keyof GrapheneBatch,
+      title: 'Oven',
+      render: (value: string | null) => (
+        <span className="text-gray-700">{value || 'N/A'}</span>
+      ),
+    },
+    {
+      key: 'species' as keyof GrapheneBatch,
+      title: 'Species',
+      render: (value: number | null) => (
+        <span className="text-gray-700">
+          {value ? `Species ${value}` : 'N/A'}
+        </span>
+      ),
+    },
+    {
+      key: 'best_bet' as keyof GrapheneBatch,
+      title: 'BET (m²/g)',
+      render: (value: number | null) => {
+        const grade = getBETGrade(value)
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium text-gray-900">
+              {value?.toLocaleString() || 'N/A'}
+            </span>
+            <Badge variant={grade.variant} size="sm" className="mt-1 w-fit">
+              {grade.label}
+            </Badge>
+          </div>
+        )
+      },
+    },
+    {
+      key: 'shipped_to' as keyof GrapheneBatch,
+      title: 'Status',
+      render: (value: string | null) => (
+        value ? (
+          <Badge variant="green">
+            <span className="flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+              </svg>
+              {value}
+            </span>
+          </Badge>
+        ) : (
+          <Badge variant="gray">In Lab</Badge>
+        )
+      ),
+    },
+  ]
 
   if (isLoading) {
     return (
-      <VStack spacing={4} align="center" justify="center" h="400px">
-        <Spinner size="xl" color="gray.400" />
-        <Text color="gray.400">Loading batches...</Text>
-      </VStack>
+      <div className="flex items-center justify-center min-h-96">
+        <div className="text-center">
+          <LoadingSpinner size="lg" />
+          <p className="mt-4 text-gray-600">Loading batches...</p>
+        </div>
+      </div>
     )
   }
 
   if (error) {
     return (
-      <Alert status="error">
-        <AlertIcon />
-        Failed to load batch data
-      </Alert>
+      <div className="rounded-lg bg-red-50 p-4">
+        <div className="flex">
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-red-800">Error loading batches</h3>
+            <p className="mt-1 text-sm text-red-700">Failed to load batch data. Please try again.</p>
+          </div>
+        </div>
+      </div>
     )
   }
 
   return (
-    <VStack spacing={6} align="stretch">
-      <Box>
-        <Heading size="lg" mb={2} color="gray.50">
-          Batch Explorer
-        </Heading>
-        <Text color="gray.400">
-          Search and analyze all graphene batches
-        </Text>
-      </Box>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="border-b border-gray-200 pb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Batch Explorer</h1>
+        <p className="mt-2 text-gray-600">Search and analyze all graphene batches</p>
+      </div>
 
       {/* Filters */}
-      <Card bg="gray.900" border="1px solid" borderColor="gray.700">
-        <CardBody>
-          <VStack spacing={4}>
-            <HStack spacing={4} w="full" flexWrap="wrap">
-              <InputGroup maxW="300px">
-                <InputLeftElement>
-                  <SearchIcon color="gray.400" />
-                </InputLeftElement>
-                <Input
-                  placeholder="Search batch name..."
-                  value={filters.search}
-                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  bg="gray.800"
-                  borderColor="gray.600"
-                />
-              </InputGroup>
+      <div className="card">
+        <div className="card-body">
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              <SearchInput
+                placeholder="Search batch name..."
+                value={filters.search}
+                onChange={(value) => setFilters({ ...filters, search: value })}
+                className="md:col-span-2"
+              />
 
-              <Select
-                placeholder="All Ovens"
+              <select
                 value={filters.oven}
                 onChange={(e) => setFilters({ ...filters, oven: e.target.value })}
-                maxW="150px"
-                bg="gray.800"
-                borderColor="gray.600"
+                className="select"
               >
+                <option value="">All Ovens</option>
                 <option value="C">Oven C</option>
                 <option value="AV1">AV1</option>
                 <option value="AV5">AV5</option>
-              </Select>
+              </select>
 
-              <Select
-                placeholder="All Species"
+              <select
                 value={filters.species}
                 onChange={(e) => setFilters({ ...filters, species: e.target.value })}
-                maxW="150px"
-                bg="gray.800"
-                borderColor="gray.600"
+                className="select"
               >
+                <option value="">All Species</option>
                 <option value="1">Species 1</option>
                 <option value="2">Species 2</option>
-              </Select>
-            </HStack>
+              </select>
+            </div>
 
-            <HStack spacing={6}>
-              <Checkbox
-                isChecked={filters.oven_c_era}
-                onChange={(e) => setFilters({ ...filters, oven_c_era: e.target.checked })}
-                colorScheme="gray"
-              >
-                Oven C Era Only
-              </Checkbox>
+            <div className="flex flex-wrap gap-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={filters.oven_c_era}
+                  onChange={(e) => setFilters({ ...filters, oven_c_era: e.target.checked })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="ml-2 text-sm text-gray-700">Oven C Era Only</span>
+              </label>
 
-              <Checkbox
-                isChecked={filters.shipped_only}
-                onChange={(e) => setFilters({ ...filters, shipped_only: e.target.checked })}
-                colorScheme="gray"
-              >
-                Shipped Only
-              </Checkbox>
-            </HStack>
-          </VStack>
-        </CardBody>
-      </Card>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={filters.shipped_only}
+                  onChange={(e) => setFilters({ ...filters, shipped_only: e.target.checked })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="ml-2 text-sm text-gray-700">Shipped Only</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Results Table */}
-      <Card bg="gray.900" border="1px solid" borderColor="gray.700">
-        <CardBody p={0}>
-          <Box overflowX="auto">
-            <Table variant="simple" size="sm">
-              <Thead bg="gray.800">
-                <Tr>
-                  <Th color="gray.300">Batch</Th>
-                  <Th color="gray.300">Date</Th>
-                  <Th color="gray.300">Oven</Th>
-                  <Th color="gray.300">Species</Th>
-                  <Th color="gray.300">BET (m²/g)</Th>
-                  <Th color="gray.300">Status</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredBatches.map((batch) => {
-                  const betGrade = getBETGrade(batch.best_bet)
-                  return (
-                    <Tr key={batch.id} _hover={{ bg: 'gray.800' }}>
-                      <Td>
-                        <VStack align="start" spacing={1}>
-                          <Text fontWeight="medium" color="gray.100">
-                            {batch.name}
-                          </Text>
-                          {batch.is_oven_c_era && (
-                            <Badge size="sm" colorScheme="green" variant="subtle">
-                              Oven C Era
-                            </Badge>
-                          )}
-                        </VStack>
-                      </Td>
-                      <Td color="gray.300">
-                        {format(new Date(batch.date_created), 'MMM dd, yyyy')}
-                      </Td>
-                      <Td color="gray.300">{batch.oven || 'N/A'}</Td>
-                      <Td color="gray.300">
-                        {batch.species ? `Species ${batch.species}` : 'N/A'}
-                      </Td>
-                      <Td>
-                        <VStack align="start" spacing={1}>
-                          <Text color="gray.100">
-                            {batch.best_bet?.toLocaleString() || 'N/A'}
-                          </Text>
-                          <Badge size="sm" colorScheme={betGrade.color} variant="subtle">
-                            {betGrade.label}
-                          </Badge>
-                        </VStack>
-                      </Td>
-                      <Td>
-                        {batch.shipped_to ? (
-                          <Badge colorScheme="green" variant="subtle">
-                            ✈️ {batch.shipped_to}
-                          </Badge>
-                        ) : (
-                          <Badge colorScheme="gray" variant="subtle">
-                            In Lab
-                          </Badge>
-                        )}
-                      </Td>
-                    </Tr>
-                  )
-                })}
-              </Tbody>
-            </Table>
-          </Box>
-        </CardBody>
-      </Card>
+      {/* Results */}
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">
+          Found {filteredBatches.length} batches
+        </p>
 
-      <Text fontSize="sm" color="gray.500">
-        Found {filteredBatches.length} batches
-      </Text>
-    </VStack>
+        <Table
+          data={filteredBatches}
+          columns={columns}
+        />
+      </div>
+    </div>
   )
 }

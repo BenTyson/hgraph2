@@ -1,73 +1,79 @@
-import { Box, VStack, Text, Button } from '@chakra-ui/react'
-import { Link, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { HomeIcon, BeakerIcon } from '@heroicons/react/24/outline'
+import { HomeIcon as HomeSolid, BeakerIcon as BeakerSolid } from '@heroicons/react/24/solid'
 
 export function Sidebar() {
-  const location = useLocation()
-  
-  const isActive = (path: string) => location.pathname === path
-
   return (
-    <Box
-      position="fixed"
-      left={0}
-      top={0}
-      w="260px"
-      h="100vh"
-      bg="white"
-      borderRight="1px solid"
-      borderColor="gray.200"
-      p={6}
-    >
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col">
       {/* Header */}
-      <Box mb={10}>
-        <Text fontSize="24px" fontWeight="700" color="gray.900" mb={1}>
-          HGraph2
-        </Text>
-        <Text fontSize="13px" color="gray.500" fontWeight="400">
-          Hemp Graphene Analytics
-        </Text>
-      </Box>
-      
+      <div className="flex-shrink-0 px-6 py-6">
+        <div className="flex items-center">
+          <div className="flex-shrink-0">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">H</span>
+            </div>
+          </div>
+          <div className="ml-3">
+            <h1 className="text-lg font-semibold text-gray-900">HGraph2</h1>
+            <p className="text-xs text-gray-500">Hemp Graphene Analytics</p>
+          </div>
+        </div>
+      </div>
+
       {/* Navigation */}
-      <VStack spacing={1} align="stretch">
-        <Button
-          as={Link}
+      <nav className="flex-1 px-4 pb-4 space-y-1">
+        <NavLink
           to="/"
-          variant={isActive('/') ? 'solid' : 'ghost'}
-          justifyContent="flex-start"
-          size="md"
-          h="40px"
-          fontSize="14px"
-          fontWeight="500"
-          borderRadius="8px"
+          className={({ isActive }) =>
+            `group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              isActive
+                ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+            }`
+          }
         >
-          Dashboard
-        </Button>
-        
-        <Button
-          as={Link}
+          {({ isActive }) => (
+            <>
+              {isActive ? (
+                <HomeSolid className="mr-3 h-5 w-5 text-blue-600" />
+              ) : (
+                <HomeIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              )}
+              Dashboard
+            </>
+          )}
+        </NavLink>
+
+        <NavLink
           to="/batches"
-          variant={isActive('/batches') ? 'solid' : 'ghost'}
-          justifyContent="flex-start"
-          size="md"
-          h="40px"
-          fontSize="14px"
-          fontWeight="500"
-          borderRadius="8px"
+          className={({ isActive }) =>
+            `group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              isActive
+                ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+            }`
+          }
         >
-          Batch Explorer
-        </Button>
-      </VStack>
-      
+          {({ isActive }) => (
+            <>
+              {isActive ? (
+                <BeakerSolid className="mr-3 h-5 w-5 text-blue-600" />
+              ) : (
+                <BeakerIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              )}
+              Batch Explorer
+            </>
+          )}
+        </NavLink>
+      </nav>
+
       {/* Footer */}
-      <Box position="absolute" bottom={6} left={6} right={6}>
-        <Text fontSize="11px" color="gray.400" textTransform="uppercase" letterSpacing="0.05em">
-          Production Analytics
-        </Text>
-        <Text fontSize="11px" color="gray.400" mt={1}>
-          Version 1.0.0
-        </Text>
-      </Box>
-    </Box>
+      <div className="flex-shrink-0 border-t border-gray-200 p-4">
+        <div className="text-xs text-gray-500">
+          <p className="font-medium">Production Analytics</p>
+          <p className="mt-1">Version 1.0.0</p>
+        </div>
+      </div>
+    </div>
   )
 }
