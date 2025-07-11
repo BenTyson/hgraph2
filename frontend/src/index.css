@@ -2,150 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-@layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  body {
-    @apply bg-gray-50 text-gray-900 font-sans;
-  }
-  
-  .dark body {
-    @apply bg-gray-950 text-gray-100;
-  }
+/* Custom copper color variables */
+:root {
+  --copper-50: #fdf4f3;
+  --copper-100: #fce8e6;
+  --copper-200: #f9d5d1;
+  --copper-300: #f4b5ae;
+  --copper-400: #ec8b7f;
+  --copper-500: #e06651;
+  --copper-600: #cd4b35;
+  --copper-700: #ab3d2a;
+  --copper-800: #8d3425;
+  --copper-900: #752e24;
 }
 
-@layer components {
-  .card {
-    @apply bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
-  }
-  
-  .dark .card {
-    @apply bg-gray-900 border-gray-700;
-  }
-  
-  .card-header {
-    @apply px-6 py-4 border-b border-gray-100;
-  }
-  
-  .dark .card-header {
-    @apply border-gray-700;
-  }
-  
-  .card-body {
-    @apply px-6 py-4;
-  }
-  
-  .btn {
-    @apply inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
-  }
-  
-  .btn-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
-  }
-  
-  .btn-secondary {
-    @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500;
-  }
-  
-  .dark .btn-secondary {
-    @apply bg-gray-800 text-gray-100 hover:bg-gray-700;
-  }
-  
-  .btn-ghost {
-    @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-500;
-  }
-  
-  .dark .btn-ghost {
-    @apply text-gray-400 hover:text-gray-100 hover:bg-gray-800;
-  }
-  
-  .input {
-    @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
-  }
-  
-  .dark .input {
-    @apply border-gray-600 bg-gray-800 text-gray-100 placeholder-gray-500;
-  }
-  
-  .select {
-    @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
-  }
-  
-  .dark .select {
-    @apply border-gray-600 bg-gray-800 text-gray-100;
-  }
-  
-  .badge {
-    @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium;
-  }
-  
-  .badge-green {
-    @apply bg-green-100 text-green-800;
-  }
-  
-  .dark .badge-green {
-    @apply bg-green-900/50 text-green-300;
-  }
-  
-  .badge-blue {
-    @apply bg-blue-100 text-blue-800;
-  }
-  
-  .dark .badge-blue {
-    @apply bg-blue-900/50 text-blue-300;
-  }
-  
-  .badge-yellow {
-    @apply bg-yellow-100 text-yellow-800;
-  }
-  
-  .dark .badge-yellow {
-    @apply bg-yellow-900/50 text-yellow-300;
-  }
-  
-  .badge-red {
-    @apply bg-red-100 text-red-800;
-  }
-  
-  .dark .badge-red {
-    @apply bg-red-900/50 text-red-300;
-  }
-  
-  .badge-gray {
-    @apply bg-gray-100 text-gray-800;
-  }
-  
-  .dark .badge-gray {
-    @apply bg-gray-800 text-gray-300;
-  }
-  
-  .stat-label {
-    @apply text-xs font-medium text-gray-500 uppercase tracking-wider;
-  }
-  
-  .dark .stat-label {
-    @apply text-gray-400;
-  }
-  
-  .stat-value {
-    @apply text-2xl font-semibold text-gray-900;
-  }
-  
-  .dark .stat-value {
-    @apply text-gray-100;
-  }
-  
-  .stat-help {
-    @apply text-sm text-gray-500;
-  }
-  
-  .dark .stat-help {
-    @apply text-gray-400;
-  }
+/* Dark theme improvements */
+.dark {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --border-primary: #374151;
+  --copper-accent: #cd4b35;
+}
+
+/* Custom scrollbar for dark theme */
+.dark::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.dark::-webkit-scrollbar-thumb {
+  background: var(--copper-accent);
+  border-radius: 4px;
+}
+
+.dark::-webkit-scrollbar-thumb:hover {
+  background: var(--copper-600);
+}
+
+/* Copper gradient utilities */
+.bg-copper-gradient {
+  background: linear-gradient(135deg, #cd4b35 0%, #e06651 100%);
+}
+
+.bg-dark-gradient {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }

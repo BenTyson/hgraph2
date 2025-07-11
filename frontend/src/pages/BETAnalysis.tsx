@@ -313,3 +313,18 @@ export function BETAnalysis() {
     </div>
   );
 }
+
+// Add this to the imports at the top
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+
+// Add this button in the header section (after line ~80, before the View Toggle):
+      {/* Quick Import Button */}
+      <div className="mb-4">
+        <button 
+          onClick={() => window.location.href = '/import'}
+          className="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors"
+        >
+          <ArrowUpTrayIcon className="h-4 w-4 mr-2" />
+          Import BET Data
+        </button>
+      </div>
